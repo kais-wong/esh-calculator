@@ -1,42 +1,135 @@
-body {
-  font-family: Arial, sans-serif;
-  padding: 1rem;
-  max-width: 100%;
-  margin: auto;
-  box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ESH Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 1rem;
+      max-width: 100%;
+      margin: auto;
+      box-sizing: border-box;
+    }
+    h1, h2 {
+      font-size: 1.5rem;
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+    input, button {
+      width: 100%;
+      max-width: 100%;
+      padding: 0.5rem;
+      font-size: 1.2rem;
+      box-sizing: border-box;
+      margin-top: 0.3rem;
+    }
+    button {
+      margin-top: 1.5rem;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+    .output {
+      margin-top: 1.5rem;
+      font-weight: bold;
+      font-size: 1.2rem;
+      word-wrap: break-word;
+    }
 
-input, button {
-  font-size: 1.2rem;
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-}
+    @media (max-width: 400px) {
+      body {
+        padding: 0.5rem;
+      }
+      h1, h2 {
+        font-size: 1.2rem;
+      }
+      input, button {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>ESH Catch-Up Calculator</h1>
 
-label {
-  margin-top: 1rem;
-  font-weight: 600;
-  font-size: 1rem;
-}
+  <h2>1. Days to Catch Up on ESH Deficit</h2>
+  <label>ESH Deficit:</label>
+  <input type="number" id="eshDeficit" step="any" />
 
-h1, h2 {
-  font-size: 1.5rem;
-}
+  <label>Labor Hours per Person per Day:</label>
+  <input type="number" id="hoursPerPersonPerDay" step="any" />
 
-.output {
-  font-size: 1.2rem;
-  margin-top: 1rem;
-  word-wrap: break-word;
-}
+  <label>Number of People:</label>
+  <input type="number" id="numPeople" step="any" />
 
-@media (max-width: 400px) {
-  body {
-    padding: 0.5rem;
-  }
-  h1, h2 {
-    font-size: 1.2rem;
-  }
-  input, button {
-    font-size: 1rem;
-  }
-}
+  <label>Daily ESH Total (All People):</label>
+  <input type="number" id="dailyESHTotal" step="any" />
+
+  <button onclick="calculateDaysToCatchUp()">Calculate Days to Catch Up</button>
+
+  <div class="output" id="catchUpOutput"></div>
+
+  <h2>2. Calculate ESH per Person per Hour</h2>
+  <label>Daily ESH Total:</label>
+  <input type="number" id="calcDailyESH" step="any" />
+
+  <label>Labor Hours per Person per Day:</label>
+  <input type="number" id="calcHoursPerPerson" step="any" />
+
+  <label>Number of People:</label>
+  <input type="number" id="calcPeople" step="any" />
+
+  <button onclick="calculateESHPerHour()">Calculate ESH per Person per Hour</button>
+
+  <div class="output" id="eshPerHourOutput"></div>
+
+  <script>
+    function calculateDaysToCatchUp() {
+      const eshDeficit = parseFloat(document.getElementById('eshDeficit').value);
+      const hoursPerPersonPerDay = parseFloat(document.getElementById('hoursPerPersonPerDay').value);
+      const numPeople = parseFloat(document.getElementById('numPeople').value);
+      const dailyESHTotal = parseFloat(document.getElementById('dailyESHTotal').value);
+
+      if ([eshDeficit, hoursPerPersonPerDay, numPeople, dailyESHTotal].some(isNaN)) {
+        document.getElementById('catchUpOutput').innerText = 'Please fill in all fields correctly.';
+        return;
+      }
+
+      const eshPerHour = dailyESHTotal / (numPeople * hoursPerPersonPerDay);
+      const totalESHPerDay = eshPerHour * hoursPerPersonPerDay * numPeople;
+      const daysNeeded = eshDeficit / totalESHPerDay;
+
+      document.getElementById('catchUpOutput').innerHTML = `
+        Estimated ESH per Person per Hour: ${eshPerHour.toFixed(2)}<br>
+        Days Needed to Catch Up: ${daysNeeded.toFixed(2)}
+      `;
+    }
+
+    function calculateESHPerHour() {
+      const dailyESH = parseFloat(document.getElementById('calcDailyESH').value);
+      const hoursPerPerson = parseFloat(document.getElementById('calcHoursPerPerson').value);
+      const people = parseFloat(document.getElementById('calcPeople').value);
+
+      if ([dailyESH, hoursPerPerson, people].some(isNaN)) {
+        document.getElementById('eshPerHourOutput').innerText = 'Please fill in all fields correctly.';
+        return;
+      }
+
+      const totalLaborHours = hoursPerPerson * people;
+      const eshPerHour = dailyESH / totalLaborHours;
+
+      document.getElementById('eshPerHourOutput').innerHTML = `
+        ESH per Person per Hour: ${eshPerHour.toFixed(2)}
+      `;
+    }
+  </script>
+</body>
+</html>
