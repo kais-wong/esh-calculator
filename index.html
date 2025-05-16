@@ -58,8 +58,9 @@
   </style>
 </head>
 <body>
-  <h1>ESH Catch-Up Calculator</h1>
+  <h1>ESH Calculator</h1>
 
+  <!-- Calculator 1 -->
   <h2>1. Days to Catch Up on ESH Deficit</h2>
   <label>ESH Deficit:</label>
   <input type="number" id="eshDeficit" step="any" />
@@ -77,6 +78,7 @@
 
   <div class="output" id="catchUpOutput"></div>
 
+  <!-- Calculator 2 -->
   <h2>2. Calculate ESH per Person per Hour</h2>
   <label>Daily ESH Total:</label>
   <input type="number" id="calcDailyESH" step="any" />
@@ -90,6 +92,24 @@
   <button onclick="calculateESHPerHour()">Calculate ESH per Person per Hour</button>
 
   <div class="output" id="eshPerHourOutput"></div>
+
+  <!-- Calculator 3 -->
+  <h2>3. Daily ESH Needed to Catch Up</h2>
+  <label>ESH Deficit:</label>
+  <input type="number" id="dailyDeficit" step="any" />
+
+  <label>Normal Daily ESH Target:</label>
+  <input type="number" id="dailyTarget" step="any" />
+
+  <label>Number of Days Available:</label>
+  <input type="number" id="daysAvailable" step="any" />
+
+  <label>Number of People:</label>
+  <input type="number" id="dailyPeople" step="any" />
+
+  <button onclick="calculateDailyTargetToCatchUp()">Calculate Required Daily ESH</button>
+
+  <div class="output" id="dailyCatchUpOutput"></div>
 
   <script>
     function calculateDaysToCatchUp() {
@@ -128,6 +148,28 @@
 
       document.getElementById('eshPerHourOutput').innerHTML = `
         ESH per Person per Hour: ${eshPerHour.toFixed(2)}
+      `;
+    }
+
+    function calculateDailyTargetToCatchUp() {
+      const deficit = parseFloat(document.getElementById('dailyDeficit').value);
+      const dailyTarget = parseFloat(document.getElementById('dailyTarget').value);
+      const days = parseFloat(document.getElementById('daysAvailable').value);
+      const people = parseFloat(document.getElementById('dailyPeople').value);
+
+      if ([deficit, dailyTarget, days, people].some(isNaN)) {
+        document.getElementById('dailyCatchUpOutput').innerText = 'Please fill in all fields correctly.';
+        return;
+      }
+
+      const extraPerDay = deficit / days;
+      const totalDailyRequired = dailyTarget + extraPerDay;
+      const perPersonDaily = totalDailyRequired / people;
+
+      document.getElementById('dailyCatchUpOutput').innerHTML = `
+        Extra ESH Needed per Day: ${extraPerDay.toFixed(2)}<br>
+        Total Required ESH per Day: ${totalDailyRequired.toFixed(2)}<br>
+        Required ESH per Day per Person: ${perPersonDaily.toFixed(2)}
       `;
     }
   </script>
