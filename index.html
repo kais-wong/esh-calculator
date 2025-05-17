@@ -111,6 +111,25 @@
 
   <div class="output" id="dailyCatchUpOutput"></div>
 
+  <!-- Calculator 4 -->
+  <h2>4. Cycle Time Calculator</h2>
+  <label>Number of Parts Produced:</label>
+  <input type="number" id="cycleParts" step="any" />
+  
+  <label>Time in Seconds:</label>
+  <input type="number" id="cycleSeconds" step="any" />
+  
+  <label>Time in Minutes:</label>
+  <input type="number" id="cycleMinutes" step="any" />
+  
+  <label>Time in Hours:</label>
+  <input type="number" id="cycleHours" step="any" />
+  
+  <button onclick="calculateCycleTime()">Calculate Cycle Time</button>
+  
+  <div class="output" id="cycleOutput"></div>
+
+
   <script>
     function calculateDaysToCatchUp() {
       const eshDeficit = parseFloat(document.getElementById('eshDeficit').value);
@@ -170,6 +189,35 @@
         Extra ESH Needed per Day: ${extraPerDay.toFixed(2)}<br>
         Total Required ESH per Day: ${totalDailyRequired.toFixed(2)}<br>
         Required ESH per Day per Person: ${perPersonDaily.toFixed(2)}
+      `;
+    }
+
+    function calculateCycleTime() {
+      const parts = parseFloat(document.getElementById('cycleParts').value);
+      const seconds = parseFloat(document.getElementById('cycleSeconds').value) || 0;
+      const minutes = parseFloat(document.getElementById('cycleMinutes').value) || 0;
+      const hours = parseFloat(document.getElementById('cycleHours').value) || 0;
+    
+      if (isNaN(parts) || parts <= 0) {
+        document.getElementById('cycleOutput').innerText = 'Please enter a valid number of parts produced.';
+        return;
+      }
+    
+      const totalSeconds = seconds + (minutes * 60) + (hours * 3600);
+    
+      if (totalSeconds <= 0) {
+        document.getElementById('cycleOutput').innerText = 'Please enter a valid amount of time.';
+        return;
+      }
+    
+      const partsPerSecond = parts / totalSeconds;
+      const partsPerMinute = partsPerSecond * 60;
+      const partsPerHour = partsPerSecond * 3600;
+    
+      document.getElementById('cycleOutput').innerHTML = `
+        Parts per Second: ${partsPerSecond.toFixed(4)}<br>
+        Parts per Minute: ${partsPerMinute.toFixed(2)}<br>
+        Parts per Hour: ${partsPerHour.toFixed(2)}
       `;
     }
   </script>
