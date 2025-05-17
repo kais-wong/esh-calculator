@@ -193,18 +193,17 @@
       const partsPerHour = partsPerSecond * 3600;
 
       const timePerPartSeconds = totalSeconds / parts;
-      const timePerPartMinutes = timePerPartSeconds / 60;
-      const timePerPartHours = timePerPartSeconds / 3600;
-
+      const totalMinutes = Math.floor(timePerPartSeconds / 60);
+      const remainingSeconds = Math.floor(timePerPartSeconds % 60);
+    
+      const formattedTime = `${String(totalMinutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+    
       document.getElementById('cycleOutput').innerHTML = `
         Parts per Second: ${partsPerSecond.toFixed(4)}<br>
         Parts per Minute: ${partsPerMinute.toFixed(2)}<br>
         Parts per Hour: ${partsPerHour.toFixed(2)}<br><br>
-
-        ⏱️ Time to Make One Part:<br>
-        ${timePerPartSeconds.toFixed(2)} seconds<br>
-        ${timePerPartMinutes.toFixed(2)} minutes<br>
-        ${timePerPartHours.toFixed(4)} hours
+    
+        ⏱️ Time to Make One Part: ${formattedTime} (MM:SS)
       `;
     }
   </script>
