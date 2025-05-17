@@ -2,207 +2,225 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ESH Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ESH Tools</title>
   <style>
+    :root {
+      --primary: #007BFF;
+      --bg: #f9f9f9;
+      --card-bg: white;
+      --text: #333;
+      --radius: 12px;
+    }
+    * {
+      box-sizing: border-box;
+    }
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
       padding: 1rem;
-      max-width: 100%;
-      margin: auto;
-      box-sizing: border-box;
     }
-    h1, h2 {
-      font-size: 1.5rem;
+    h1 {
       text-align: center;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
     }
-    label {
-      display: block;
-      margin-top: 1rem;
-      font-weight: 600;
-      font-size: 1rem;
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
     }
-    input, button {
-      width: 100%;
+    .card {
+      background-color: var(--card-bg);
+      padding: 1rem;
+      border-radius: var(--radius);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: scale(1.03);
+    }
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .card-label {
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .hidden {
+      display: none;
+    }
+    .calculator {
+      margin-top: 2rem;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: var(--primary);
+      color: white;
+      border-radius: var(--radius);
+      text-decoration: none;
+    }
+    input {
+      margin-bottom: 10px;
       padding: 0.5rem;
-      font-size: 1.2rem;
-      box-sizing: border-box;
-      margin-top: 0.3rem;
+      width: 100%;
+      max-width: 300px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
     }
     button {
-      margin-top: 1.5rem;
-      background-color: #007BFF;
+      padding: 0.5rem 1rem;
+      background-color: var(--primary);
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 6px;
+      cursor: pointer;
     }
     .output {
-      margin-top: 1.5rem;
-      font-weight: bold;
-      font-size: 1.2rem;
-      word-wrap: break-word;
-    }
-    @media (max-width: 400px) {
-      body {
-        padding: 0.5rem;
-      }
-      h1, h2 {
-        font-size: 1.2rem;
-      }
-      input, button {
-        font-size: 1rem;
-      }
+      margin-top: 1rem;
     }
   </style>
 </head>
 <body>
-  <h1>ESH Calculator</h1>
+  <h1>ESH Calculators</h1>
 
-  <!-- Calculator 1 -->
-  <h2>1. Days to Catch Up on ESH Deficit</h2>
-  <label>ESH Deficit:</label>
-  <input type="number" id="eshDeficit" step="any" />
-  <label>Labor Hours per Person per Day:</label>
-  <input type="number" id="hoursPerPersonPerDay" step="any" />
-  <label>Number of People:</label>
-  <input type="number" id="numPeople" step="any" />
-  <label>Daily ESH Total (All People):</label>
-  <input type="number" id="dailyESHTotal" step="any" />
-  <button onclick="calculateDaysToCatchUp()">Calculate Days to Catch Up</button>
-  <div class="output" id="catchUpOutput"></div>
+  <div class="grid" id="home">
+    <div class="card" onclick="showCalculator('calc1')">
+      <div class="card-icon">📆</div>
+      <div class="card-label">Days to Catch Up</div>
+    </div>
+    <div class="card" onclick="showCalculator('calc2')">
+      <div class="card-icon">🧮</div>
+      <div class="card-label">ESH per Person/Hour</div>
+    </div>
+    <div class="card" onclick="showCalculator('calc3')">
+      <div class="card-icon">🎯</div>
+      <div class="card-label">Daily ESH Target</div>
+    </div>
+    <div class="card" onclick="showCalculator('calc4')">
+      <div class="card-icon">⏱️</div>
+      <div class="card-label">Cycle Time</div>
+    </div>
+  </div>
 
-  <!-- Calculator 2 -->
-  <h2>2. Calculate ESH per Person per Hour</h2>
-  <label>Daily ESH Total:</label>
-  <input type="number" id="calcDailyESH" step="any" />
-  <label>Labor Hours per Person per Day:</label>
-  <input type="number" id="calcHoursPerPerson" step="any" />
-  <label>Number of People:</label>
-  <input type="number" id="calcPeople" step="any" />
-  <button onclick="calculateESHPerHour()">Calculate ESH per Person per Hour</button>
-  <div class="output" id="eshPerHourOutput"></div>
+  <div id="calculatorViews">
+    <div id="calc1" class="calculator hidden">
+      <a class='back-btn' onclick='goBack()'>← Back</a>
+      <h2>Days to Catch Up</h2>
+      <input type="number" id="deficit" placeholder="ESH Deficit" />
+      <input type="number" id="eshPerPersonPerHour" placeholder="ESH per Person per Hour" />
+      <input type="number" id="people" placeholder="Number of People" />
+      <input type="number" id="hoursPerDay" placeholder="Labor Hours per Day" />
+      <button onclick="calculateDaysToCatchUp()">Calculate</button>
+      <div class="output" id="catchUpOutput"></div>
+    </div>
 
-  <!-- Calculator 3 -->
-  <h2>3. Daily ESH Needed to Catch Up</h2>
-  <label>ESH Deficit:</label>
-  <input type="number" id="dailyDeficit" step="any" />
-  <label>Normal Daily ESH Target:</label>
-  <input type="number" id="dailyTarget" step="any" />
-  <label>Number of Days Available:</label>
-  <input type="number" id="daysAvailable" step="any" />
-  <label>Number of People:</label>
-  <input type="number" id="dailyPeople" step="any" />
-  <button onclick="calculateDailyTargetToCatchUp()">Calculate Required Daily ESH</button>
-  <div class="output" id="dailyCatchUpOutput"></div>
+    <div id="calc2" class="calculator hidden">
+      <a class='back-btn' onclick='goBack()'>← Back</a>
+      <h2>ESH per Person/Hour</h2>
+      <input type="number" id="totalESH" placeholder="Total ESH per Day" />
+      <input type="number" id="totalPeople" placeholder="Number of People" />
+      <input type="number" id="hoursWorked" placeholder="Labor Hours per Person per Day" />
+      <button onclick="calculateESHRate()">Calculate</button>
+      <div class="output" id="eshRateOutput"></div>
+    </div>
 
-  <!-- Calculator 4 -->
-  <h2>4. Cycle Time Calculator</h2>
-  <label>Number of Parts Produced:</label>
-  <input type="number" id="cycleParts" step="any" />
-  <label>Time in Seconds:</label>
-  <input type="number" id="cycleSeconds" step="any" />
-  <label>Time in Minutes:</label>
-  <input type="number" id="cycleMinutes" step="any" />
-  <label>Time in Hours:</label>
-  <input type="number" id="cycleHours" step="any" />
-  <button onclick="calculateCycleTime()">Calculate Cycle Time</button>
-  <div class="output" id="cycleOutput"></div>
+    <div id="calc3" class="calculator hidden">
+      <a class='back-btn' onclick='goBack()'>← Back</a>
+      <h2>Daily ESH Target</h2>
+      <input type="number" id="targetESH" placeholder="Daily Target ESH" />
+      <input type="number" id="deficit2" placeholder="Deficit ESH" />
+      <input type="number" id="daysAvailable" placeholder="Days Available" />
+      <input type="number" id="numPeople" placeholder="Number of People" />
+      <button onclick="calculateDailyTarget()">Calculate</button>
+      <div class="output" id="dailyTargetOutput"></div>
+    </div>
+
+    <div id="calc4" class="calculator hidden">
+      <a class='back-btn' onclick='goBack()'>← Back</a>
+      <h2>Cycle Time</h2>
+      <input type="number" id="partsProduced" placeholder="Parts Produced" />
+      <input type="number" id="seconds" placeholder="Seconds (optional)" />
+      <input type="number" id="minutes" placeholder="Minutes (optional)" />
+      <input type="number" id="hours" placeholder="Hours (optional)" />
+      <button onclick="calculateCycleTime()">Calculate</button>
+      <div class="output" id="cycleOutput"></div>
+    </div>
+  </div>
 
   <script>
+    function showCalculator(id) {
+      document.getElementById('home').style.display = 'none';
+      document.querySelectorAll('.calculator').forEach(c => c.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function goBack() {
+      document.getElementById('home').style.display = 'grid';
+      document.querySelectorAll('.calculator').forEach(c => c.classList.add('hidden'));
+    }
+
     function calculateDaysToCatchUp() {
-      const eshDeficit = parseFloat(document.getElementById('eshDeficit').value);
-      const hoursPerPersonPerDay = parseFloat(document.getElementById('hoursPerPersonPerDay').value);
-      const numPeople = parseFloat(document.getElementById('numPeople').value);
-      const dailyESHTotal = parseFloat(document.getElementById('dailyESHTotal').value);
-
-      if ([eshDeficit, hoursPerPersonPerDay, numPeople, dailyESHTotal].some(isNaN)) {
-        document.getElementById('catchUpOutput').innerText = 'Please fill in all fields correctly.';
-        return;
-      }
-
-      const eshPerHour = dailyESHTotal / (numPeople * hoursPerPersonPerDay);
-      const totalESHPerDay = eshPerHour * hoursPerPersonPerDay * numPeople;
-      const daysNeeded = eshDeficit / totalESHPerDay;
-
-      document.getElementById('catchUpOutput').innerHTML = `
-        Estimated ESH per Person per Hour: ${eshPerHour.toFixed(2)}<br>
-        Days Needed to Catch Up: ${daysNeeded.toFixed(2)}
-      `;
+      const deficit = +document.getElementById('deficit').value;
+      const rate = +document.getElementById('eshPerPersonPerHour').value;
+      const people = +document.getElementById('people').value;
+      const hours = +document.getElementById('hoursPerDay').value;
+      const dailyESH = rate * people * hours;
+      const days = dailyESH > 0 ? (deficit / dailyESH).toFixed(2) : 'N/A';
+      document.getElementById('catchUpOutput').innerText = `It will take approximately ${days} days to catch up.`;
     }
 
-    function calculateESHPerHour() {
-      const dailyESH = parseFloat(document.getElementById('calcDailyESH').value);
-      const hoursPerPerson = parseFloat(document.getElementById('calcHoursPerPerson').value);
-      const people = parseFloat(document.getElementById('calcPeople').value);
-
-      if ([dailyESH, hoursPerPerson, people].some(isNaN)) {
-        document.getElementById('eshPerHourOutput').innerText = 'Please fill in all fields correctly.';
-        return;
-      }
-
-      const totalLaborHours = hoursPerPerson * people;
-      const eshPerHour = dailyESH / totalLaborHours;
-
-      document.getElementById('eshPerHourOutput').innerHTML = `
-        ESH per Person per Hour: ${eshPerHour.toFixed(2)}
-      `;
+    function calculateESHRate() {
+      const totalESH = +document.getElementById('totalESH').value;
+      const people = +document.getElementById('totalPeople').value;
+      const hours = +document.getElementById('hoursWorked').value;
+      const rate = (totalESH / (people * hours)).toFixed(2);
+      document.getElementById('eshRateOutput').innerText = `ESH per Person per Hour: ${rate}`;
     }
 
-    function calculateDailyTargetToCatchUp() {
-      const deficit = parseFloat(document.getElementById('dailyDeficit').value);
-      const dailyTarget = parseFloat(document.getElementById('dailyTarget').value);
-      const days = parseFloat(document.getElementById('daysAvailable').value);
-      const people = parseFloat(document.getElementById('dailyPeople').value);
-
-      if ([deficit, dailyTarget, days, people].some(isNaN)) {
-        document.getElementById('dailyCatchUpOutput').innerText = 'Please fill in all fields correctly.';
-        return;
-      }
-
-      const extraPerDay = deficit / days;
-      const totalDailyRequired = dailyTarget + extraPerDay;
-      const perPersonDaily = totalDailyRequired / people;
-
-      document.getElementById('dailyCatchUpOutput').innerHTML = `
-        Extra ESH Needed per Day: ${extraPerDay.toFixed(2)}<br>
-        Total Required ESH per Day: ${totalDailyRequired.toFixed(2)}<br>
-        Required ESH per Day per Person: ${perPersonDaily.toFixed(2)}
-      `;
+    function calculateDailyTarget() {
+      const target = +document.getElementById('targetESH').value;
+      const deficit = +document.getElementById('deficit2').value;
+      const days = +document.getElementById('daysAvailable').value;
+      const people = +document.getElementById('numPeople').value;
+      const totalRequired = target * days + deficit;
+      const dailyRequired = (totalRequired / days).toFixed(2);
+      const perPerson = (dailyRequired / people).toFixed(2);
+      document.getElementById('dailyTargetOutput').innerText = `Required ESH per day: ${dailyRequired}\nRequired ESH per person per day: ${perPerson}`;
     }
 
     function calculateCycleTime() {
-      const parts = parseFloat(document.getElementById('cycleParts').value);
-      const seconds = parseFloat(document.getElementById('cycleSeconds').value) || 0;
-      const minutes = parseFloat(document.getElementById('cycleMinutes').value) || 0;
-      const hours = parseFloat(document.getElementById('cycleHours').value) || 0;
+      const parts = +document.getElementById('partsProduced').value;
+      const sec = +document.getElementById('seconds').value || 0;
+      const min = +document.getElementById('minutes').value || 0;
+      const hr = +document.getElementById('hours').value || 0;
+      const totalSeconds = sec + min * 60 + hr * 3600;
 
-      if (isNaN(parts) || parts <= 0) {
-        document.getElementById('cycleOutput').innerText = 'Please enter a valid number of parts produced.';
-        return;
-      }
-
-      const totalSeconds = seconds + (minutes * 60) + (hours * 3600);
-
-      if (totalSeconds <= 0) {
-        document.getElementById('cycleOutput').innerText = 'Please enter a valid amount of time.';
+      if (parts <= 0 || totalSeconds <= 0) {
+        document.getElementById('cycleOutput').innerText = "Please enter valid inputs.";
         return;
       }
 
       const partsPerSecond = parts / totalSeconds;
       const partsPerMinute = partsPerSecond * 60;
-      const partsPerHour = partsPerSecond * 3600;
+      const partsPerHour = partsPerMinute * 60;
 
       const timePerPartSeconds = totalSeconds / parts;
       const totalMinutes = Math.floor(timePerPartSeconds / 60);
       const remainingSeconds = Math.floor(timePerPartSeconds % 60);
-    
       const formattedTime = `${String(totalMinutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
-    
+
       document.getElementById('cycleOutput').innerHTML = `
         Parts per Second: ${partsPerSecond.toFixed(4)}<br>
         Parts per Minute: ${partsPerMinute.toFixed(2)}<br>
         Parts per Hour: ${partsPerHour.toFixed(2)}<br><br>
-    
         ⏱️ Time to Make One Part: ${formattedTime} (MM:SS)
       `;
     }
